@@ -9,8 +9,9 @@
     <title>@yield('title', 'Laravel Shop') - Laravel 电商</title>
     <!-- 样式 -->
     {{--<link href="{{ mix('css/app.css') }}" rel="stylesheet">--}}
-    <link href="/css/app.css" rel="stylesheet">
     <link href="/css/web.css" rel="stylesheet">
+
+    <link href="/css/app.css" rel="stylesheet">
 </head>
 <body>
 <div id="app" class="{{ route_class() }}-page">
@@ -21,6 +22,6 @@
     @include('layouts._footer')
 </div>
 <!-- JS 脚本 -->
-{{--<script src="{{ mix('js/app.js') }}"></script>--}}
+<script src="/js/app.js"></script>
 </body>
 </html>

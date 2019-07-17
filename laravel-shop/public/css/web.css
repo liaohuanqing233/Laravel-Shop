@@ -48,3 +48,13 @@ body {
 .footer .container a {
     color: inherit;
 }
+
+.menu_list {
+    display: none;
+    position: relative;
+}
+
+.nav-item .menu_main:hover .menu_list {
+    display:block;
+    position: relative;
+}
