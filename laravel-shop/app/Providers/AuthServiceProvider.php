@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\UserAddress;
 use App\Policies\UserAddressPolicy;
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
