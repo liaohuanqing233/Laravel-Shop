@@ -49,4 +49,20 @@ class ProductsController extends Controller
             ],
         ]);
     }
+
+    /**
+     * @param Product $product
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Exception
+     */
+    public function show(Product $product, Request $request)
+    {
+        //判断商品是否上架，没有则抛出异常
+        if (! $product->on_sale) {
+            throw new \Exception('商品未上架');
+        }
+
+        return view('products.show', compact('product'));
+    }
 }

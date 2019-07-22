@@ -37,7 +37,7 @@
                                     <div class="top">
                                         <div class="img"><img src="{{ $product->image_url }}" alt=""></div>
                                         <div class="price"><b>￥</b>{{ $product->price }}</div>
-                                        <div class="title">{{ $product->title }}</div>
+                                        <div class="title"><a href="{{ route('products.show', $product) }}">{{ $product->title }}</a></div>
                                     </div>
                                     <div class="bottom">
                                         <div class="sold_count">销量 <span>{{ $product->sold_count }}笔</span></div>
