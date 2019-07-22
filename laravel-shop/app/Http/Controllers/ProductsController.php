@@ -75,6 +75,13 @@ class ProductsController extends Controller
         return view('products.show', compact('product', 'favored'));
     }
 
+    public function favorites(Request $request)
+    {
+        $products = $request->user()->favoriteProducts()->paginate(16);
+
+        return view('products.favorites', compact('products'));
+    }
+
     public function favor(Product $product, Request $request)
     {
         $user = $request->user();
@@ -89,8 +96,7 @@ class ProductsController extends Controller
 
     public function disfavor(Product $product, Request $request)
     {
-        $user = $request->user();
-        $user->favoriteProducts()->detach($product);
+        $request->user()->favoriteProducts()->detach($product);
 
         return [];
     }
