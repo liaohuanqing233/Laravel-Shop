@@ -27,6 +27,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('cart', 'CartController@add')->name('cart.add');
     Route::get('cart', 'CartController@index')->name('cart.index');
     Route::delete('cart/{sku}', 'CartController@remove')->name('cart.remove');
+    //提交订单
+    Route::post('orders', 'OrdersController@store')->name('orders.store');
 });
 //商品首页及详情页
 Route::get('products', 'ProductsController@index')->name('products.index');
