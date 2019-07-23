@@ -11,17 +11,24 @@
 |
 */
 
+//root
 Route::redirect('/', '/products')->name('root');
-
+//用户登录注册等路由
 Auth::routes();
-
+//需要登录后才能进行的操作
 Route::group(['middleware' => ['auth']], function () {
+    //用户收货地址
     Route::resource('user_addresses', 'UserAddressesController');
+    //收藏及取消收藏商品，收藏商品列表
     Route::post('products/{product}/favorite', 'ProductsController@favor')->name('products.favor');
     Route::delete('products/{product}/favorite', 'ProductsController@disfavor')->name('products.disfavor');
     Route::get('products/favorites', 'ProductsController@favorites')->name('products.favorites');
+    //添加购物车
+    Route::post('cart', 'CartController@add')->name('cart.add');
+    Route::get('cart', 'CartController@index')->name('cart.index');
+    Route::delete('cart/{sku}', 'CartController@remove')->name('cart.remove');
 });
-
+//商品首页及详情页
 Route::get('products', 'ProductsController@index')->name('products.index');
 Route::get('products/{product}', 'ProductsController@show')->name('products.show');
 
