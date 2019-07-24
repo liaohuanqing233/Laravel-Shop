@@ -60,6 +60,11 @@ class Order extends Model
         'paid_at',
     ];
 
+    protected $with = [
+        'items.product',
+        'items.productSku'
+    ];
+
     protected static function boot()
     {
         parent::boot();

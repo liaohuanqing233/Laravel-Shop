@@ -14,6 +14,27 @@ use Illuminate\Support\Facades\DB;
 
 class OrdersController extends Controller
 {
+    public function index(Request $request)
+    {
+        $orders = Order::query()
+            ->where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate();
+
+        return view('orders.index', compact('orders'));
+    }
+
+    /**
+     * @param Order $order
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException exception 权限限制
+     */
+    public function show(Order $order)
+    {
+        $this->authorize('own', $order);
+        return view('orders.show', compact('order'));
+    }
+
     public function store(OrderRequest $request)
     {
         $user = $request->user();
