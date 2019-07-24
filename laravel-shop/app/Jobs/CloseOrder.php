@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -30,6 +31,7 @@ class CloseOrder implements ShouldQueue
     {
         // 判断对应的订单是否已经被支付
         // 如果已经支付则不需要关闭订单，直接退出
+        Log::warning('关闭时间'.Carbon::now());
         if ($this->order->paid_at) {
             return;
         }

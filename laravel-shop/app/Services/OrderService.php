@@ -80,12 +80,12 @@ class OrderService
 
             // 将下单的商品从购物车中移除
             $skuIds = collect($items)->pluck('sku_id');
-            app(CartService::class)->deleteItems($skuIds);
+            app(CartService::class)->deleteItems($user, $skuIds);
 
             return $order;
         });
 
-        //延时任务，关闭未订单
+        //延时任务，关闭未支付订单
         dispatch(new CloseOrder($order, config('app.order_ttl')));
 
         return $order;
