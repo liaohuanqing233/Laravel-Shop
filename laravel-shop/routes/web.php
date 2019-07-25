@@ -31,8 +31,20 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('orders', 'OrdersController@store')->name('orders.store');
     Route::get('orders', 'OrdersController@index')->name('orders.index');
     Route::get('orders/{order}', 'OrdersController@show')->name('orders.show');
+    //订单支付功能
+    Route::get('payment/{order}/alipay', 'PaymentController@payByAlipay')->name('payment.alipay');
+    Route::get('payment/alipay/return', 'PaymentController@alipayReturn')->name('payment.alipay.return');
 });
+Route::post('payment/alipay/notify', 'PaymentController@alipayNotify')->name('payment.alipay.notify');
+
 //商品首页及详情页
 Route::get('products', 'ProductsController@index')->name('products.index');
 Route::get('products/{product}', 'ProductsController@show')->name('products.show');
 
+//Route::get('alipay', function() {
+//    return app('alipay')->web([
+//        'out_trade_no' => time(),
+//        'total_amount' => '1',
+//        'subject' => 'test subject - 测试',
+//    ]);
+//});
