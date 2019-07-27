@@ -16,8 +16,7 @@ class ProductsController extends Controller
     use HasResourceActions;
 
     /**
-     * Index interface.
-     *
+     * 商品列表页
      * @param Content $content
      * @return Content
      */
@@ -29,23 +28,7 @@ class ProductsController extends Controller
     }
 
     /**
-     * Show interface.
-     *
-     * @param mixed $id
-     * @param Content $content
-     * @return Content
-     */
-    public function show($id, Content $content)
-    {
-        return $content
-            ->header('Detail')
-            ->description('description')
-            ->body($this->detail($id));
-    }
-
-    /**
-     * Edit interface.
-     *
+     * 编辑商品
      * @param mixed $id
      * @param Content $content
      * @return Content
@@ -58,8 +41,7 @@ class ProductsController extends Controller
     }
 
     /**
-     * Create interface.
-     *
+     * 创建商品
      * @param Content $content
      * @return Content
      */
@@ -71,8 +53,7 @@ class ProductsController extends Controller
     }
 
     /**
-     * Make a grid builder.
-     *
+     * 构建商品列表操作功能
      * @return Grid
      */
     protected function grid()
@@ -103,33 +84,7 @@ class ProductsController extends Controller
     }
 
     /**
-     * Make a show builder.
-     *
-     * @param mixed $id
-     * @return Show
-     */
-    protected function detail($id)
-    {
-        $show = new Show(Product::findOrFail($id));
-
-        $show->id('Id');
-        $show->title('Title');
-        $show->description('Description');
-        $show->image('Image');
-        $show->on_sale('On sale');
-        $show->rating('Rating');
-        $show->sold_count('Sold count');
-        $show->review_count('Review count');
-        $show->price('Price');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
-
-        return $show;
-    }
-
-    /**
-     * Make a form builder.
-     *
+     * 构建商品提交表单
      * @return Form
      */
     protected function form()

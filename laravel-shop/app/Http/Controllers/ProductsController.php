@@ -28,9 +28,11 @@ class ProductsController extends Controller
             throw new InvalidRequestException('商品未上架');
         }
 
+        $reviews = $this->productService->reviews($product, 10);
+
         $favored = $this->productService->favored($product, $request->user());
 
-        return view('products.show', compact('product', 'favored'));
+        return view('products.show', compact('product', 'favored', 'reviews'));
     }
 
     public function favorites(Request $request)

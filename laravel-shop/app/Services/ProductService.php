@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -99,5 +100,22 @@ class ProductService
     public function disfavor(Product $product, $user)
     {
         $user->favoriteProducts()->detach($product);
+    }
+
+    /**
+     * 获取该商品有限的评论
+     * @param Product $product 需要显示评论的商品
+     * @param integer $limit   显示的评论限制条数
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
+     */
+    public function reviews(Product $product, $limit)
+    {
+        return OrderItem::query()
+            ->with(['order.user', 'productSku'])
+            ->where('product_id', $product->id)
+            ->whereNotNull('reviewed_at')
+            ->orderBy('reviewed_at', 'desc')
+            ->limit($limit)
+            ->get();
     }
 }

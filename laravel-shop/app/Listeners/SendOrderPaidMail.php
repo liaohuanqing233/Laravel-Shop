@@ -7,24 +7,8 @@ use App\Notifications\OrderPaidNotification;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendOrderPaidMail
+class SendOrderPaidMail implements ShouldQueue
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Handle the event.
-     *
-     * @param  OrderPaid  $event
-     * @return void
-     */
     public function handle(OrderPaid $event)
     {
         // 从事件对象中取出对应的订单

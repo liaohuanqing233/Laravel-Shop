@@ -16,8 +16,7 @@ class UsersController extends Controller
     use HasResourceActions;
 
     /**
-     * Index interface.
-     *
+     * 用户列表页
      * @param Content $content
      * @return Content
      */
@@ -29,8 +28,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Make a grid builder.
-     *
+     * 构建用户列表操作功能
      * @return Grid
      */
     protected function grid()

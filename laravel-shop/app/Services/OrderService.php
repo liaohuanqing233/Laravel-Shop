@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\OrderReviewed;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\OrderRequest;
 use App\Jobs\CloseOrder;
@@ -89,5 +90,40 @@ class OrderService
         dispatch(new CloseOrder($order, config('app.order_ttl')));
 
         return $order;
+    }
+
+    /**
+     * 更新订单信息
+     * @param Order $order 需要更新的订单
+     * @param array $data  更新的数据
+     */
+    public function update(Order $order, $data)
+    {
+        //TODO 不限制参数个数
+        $order->update($data);
+    }
+
+    /**
+     * 保存用户上传的评价信息并更新商品评分
+     * @param Order $order   需要更新的订单
+     * @param array $reviews 用户上传的评价信息
+     */
+    public function reviewing(Order $order, $reviews)
+    {
+        //开启事务
+        DB::transaction(function () use ($reviews, $order) {
+            //遍历用户提交的数据并修改订单状态信息
+            foreach ($reviews as $review) {
+                $orderItem = $order->items()->find($review['id']);
+                $orderItem->update([
+                    'rating'      => $review['rating'],
+                    'review'      => $review['review'],
+                    'reviewed_at' => Carbon::now(),
+                ]);
+            }
+            $this->update($order, ['reviewed' => true]);
+            //手动触发更新评分事件
+            event(new OrderReviewed($order));
+        });
     }
 }

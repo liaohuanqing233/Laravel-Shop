@@ -11,12 +11,21 @@ class CartController extends Controller
 {
     protected $cartService;
 
-    //注册CartService类
+    /**
+     * 注册CartService
+     * CartController constructor.
+     * @param CartService $cartService
+     */
     public function __construct(CartService $cartService)
     {
         $this->cartService = $cartService;
     }
 
+    /**
+     * 购物车列表页
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -26,6 +35,11 @@ class CartController extends Controller
         return view('cart.index', compact('cartItems', 'addresses'));
     }
 
+    /**
+     * 添加购物车
+     * @param AddCartRequest $request
+     * @return array
+     */
     public function add(AddCartRequest $request)
     {
         $this->cartService->add($request->user(), $request->input('sku_id'), $request->input('amount'));
@@ -33,6 +47,12 @@ class CartController extends Controller
         return [];
     }
 
+    /**
+     * 删除购物车
+     * @param ProductSku $sku
+     * @param Request $request
+     * @return array
+     */
     public function remove(ProductSku $sku, Request $request)
     {
         $this->cartService->deleteItems($request->user(), $sku->id);

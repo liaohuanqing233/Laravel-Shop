@@ -9,16 +9,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UpdateProductSoldCount implements ShouldQueue
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
     // Laravel 会默认执行监听器的 handle 方法，触发的事件会作为 handle 方法的参数
     public function handle(OrderPaid $event)
     {

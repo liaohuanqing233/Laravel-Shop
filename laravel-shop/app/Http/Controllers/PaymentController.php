@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
+    /**
+     * 支付宝支付逻辑
+     * @param Order $order
+     * @param Request $request
+     * @return mixed
+     * @throws InvalidRequestException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function payByAlipay(Order $order, Request $request)
     {
         $this->authorize('own', $order);
@@ -41,7 +49,10 @@ class PaymentController extends Controller
         ]);
     }
 
-    //前端回调页面
+    /**
+     * 支付宝前端回调
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function alipayReturn()
     {
         try {
@@ -53,6 +64,10 @@ class PaymentController extends Controller
         return view('pages.success', ['msg' => '付款成功']);
     }
 
+    /**
+     * 支付宝支付服务器回调
+     * @return string
+     */
     public function alipayNotify()
     {
         $data = app('alipay')->verify();
@@ -85,6 +100,10 @@ class PaymentController extends Controller
         return app('alipay')->success();
     }
 
+    /**
+     * 支付后善后罗技
+     * @param Order $order
+     */
     public function afterPaid(Order $order)
     {
         event(new OrderPaid($order));
