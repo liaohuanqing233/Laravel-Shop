@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Events\OrderReviewed;
+use App\Exceptions\CouponCodeUnavailableException;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\OrderRequest;
 use App\Jobs\CloseOrder;
+use App\Models\CouponCode;
 use App\Models\Order;
 use App\Models\ProductSku;
 use App\Models\UserAddress;
@@ -31,14 +33,21 @@ class OrderService
 
     /**
      * 开启事务保存订单保存商品sku信息更新订单并返回订单
-     * @param  OrderRequest $request
-     * @param  object       $user     当前操作用户
+     * @param  OrderRequest      $request
+     * @param  object            $user     当前操作用户
+     * @param  null|CouponCode   $coupon   优惠卷
+     * @throws CouponCodeUnavailableException
      * @return mixed                  返回新建的order对象
      */
-    public function store(OrderRequest $request, $user)
+    public function store(OrderRequest $request, $user, CouponCode $coupon = null)
     {
+        // 如果传入了优惠券，则先检查是否可用
+        if ($coupon) {
+            // 但此时我们还没有计算出订单总金额，因此先不校验
+            $coupon->checkAvailable($user);
+        }
         //开启事务
-        $order = DB::transaction(function () use($user, $request) {
+        $order = DB::transaction(function () use($user, $request, $coupon) {
             $address = UserAddress::query()->find($request->input('address_id'));
             //更新该地址最后使用时间
             $address->update(['last_used_at' => Carbon::now()]);
@@ -73,6 +82,19 @@ class OrderService
                 $totalAmount += $sku->price * $data['amount'];
                 if ($sku->decreaseStock($data['amount']) <= 0) {
                     throw new InvalidRequestException('该商品库存不足');
+                }
+            }
+
+            if ($coupon) {
+                // 总金额已经计算出来了，检查是否符合优惠券规则
+                $coupon->checkAvailable($user, $totalAmount);
+                // 把订单金额修改为优惠后的金额
+                $totalAmount = $coupon->getAdjustedPrice($totalAmount);
+                // 将订单与优惠券关联
+                $order->couponCode()->associate($coupon);
+                // 增加优惠券的用量，需判断返回值
+                if ($coupon->changeUsed() <= 0) {
+                    throw new CouponCodeUnavailableException('该优惠券已被兑完');
                 }
             }
 

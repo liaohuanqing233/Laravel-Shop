@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CouponCodeUnavailableException;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\ApplyRefundRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\SendReviewRequest;
+use App\Models\CouponCode;
 use App\Models\Order;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
@@ -52,12 +54,21 @@ class OrdersController extends Controller
     /**
      * 新建订单
      * @param OrderRequest $request 订单验证规则
+     * @throws CouponCodeUnavailableException
      * @return mixed
      */
     public function store(OrderRequest $request)
     {
+        $coupon = null;
+        if ($code = $request->input('coupon_code')) {
+            $coupon = CouponCode::query()->where('code', $code)->first();
+            if (! $coupon) {
+                throw new CouponCodeUnavailableException('优惠卷不存在');
+            }
+        }
+
         //新建订单
-        $order = $this->orderService->store($request, $request->user());
+        $order = $this->orderService->store($request, $request->user(), $coupon);
 
         return $order;
     }
